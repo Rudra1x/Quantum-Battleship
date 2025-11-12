@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum War Room // Project Elitzur</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Exo 2', sans-serif;
+            
+            /* New Background: Solid, deep space blue */
+            background-color: #010409;
+            
+            color: #E2E8F0; /* Light gray text (not pure white) */
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* 4. Cleaner "Glass Panel" Style */
+        .panel {
+            /* Muted, darker glass */
+            background: rgba(10, 15, 30, 0.3);
+            
+            /* Faint white border, no glow */
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            padding: 1.5rem; /* 24px */
+        }
+
+        /* 5. Header Styles (No Glow) */
+        .header-title {
+            color: #FFFFFF; /* Pure white for the main title */
+            font-weight: 900;
+        }
+        .header-subtitle {
+            color: #94A3B8; /* Muted gray for subtitle */
+            font-weight: 300;
+        }
+        
+        /* 6. Button Styling (Professional Blue Accent) */
+        .btn-base {
+            background: rgba(0, 123, 255, 0.1); /* Faint blue bg */
+            border: 1px solid rgba(0, 123, 255, 0.5); /* Blue border */
+            color: #38BDF8; /* Light blue text */
+            transition: all 0.2s ease-in-out;
+            font-weight: 700;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .btn-base:not(:disabled):hover {
+            background: #007BFF; /* Solid blue on hover */
+            color: #FFFFFF;
+            border-color: #007BFF;
+            transform: scale(1.02); /* More subtle transform */
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.3); /* Faint shadow */
+        }
+
+        .btn-base:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* 7. Result Graphics (Clean) */
+        .btn-clear {
+            background: rgba(10, 30, 10, 0.3);
+            color: #4B5563; /* Dark gray text */
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .btn-ship {
+            background: #DC2626; /* Solid, deep red */
+            color: white;
+            border-color: #DC2626;
+            font-size: 1.125rem;
+            font-weight: 900;
+            animation: pulse-red-subtle 1.5s infinite; /* Slower, more subtle pulse */
+        }
+        
+        .btn-scan-used {
+            background: rgba(10, 15, 30, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0; 
+        }
+        /* The big number: Just bold and white. No glow. */
+        .scan-result-count {
+            font-size: 2.5rem; /* 40px */
+            font-weight: 900;
+            color: #FFFFFF;
+        }
+        .scan-result-clear {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #4B5563; /* Dark gray */
+        }
+        
+        /* Command Log Styling */
+        #command-log {
+            height: 32rem; 
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+        #command-log p {
+            padding: 4px 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Fainter lines */
+        }
+        #command-log::-webkit-scrollbar { width: 8px; }
+        #command-log::-webkit-scrollbar-track { background: transparent; }
+        #command-log::-webkit-scrollbar-thumb { background: #007BFF; border-radius: 4px; }
+
+        /* Animations */
+        @keyframes pulse-red-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* 10. Modal & Animation Styles (Cleaned up) */
+        .hidden { display: none; }
+        
+        /* The animation for the qubits */
+        .anim-qubit {
+            background-color: #007BFF;
+            animation: pulse-qubit 1.5s infinite alternate;
+        }
+        .anim-target.ship {
+            background-color: #FFFFFF; /* Ship is white */
+            animation: pulse-ship 1.5s infinite alternate-reverse;
+            box-shadow: 0 0 10px #FFF;
+        }
+        .anim-target {
+             background-color: #4B5563; /* Water is gray */
+        }
+        @keyframes pulse-qubit {
+            from { transform: scale(1); opacity: 0.7; }
+            to   { transform: scale(1.5); opacity: 1; box-shadow: 0 0 15px #007BFF; }
+        }
+        @keyframes pulse-ship {
+            from { transform: scale(1); }
+            to   { transform: scale(1.1); }
+        }
+        
+        /* The "scan wave" animation */
+        .modal-open #anim-scan-wave {
+            background-color: #007BFF; /* Blue scan wave */
+            animation: scan-down 1.5s ease-out forwards;
+        }
+        .modal-open #anim-return-wave {
+            background-color: #FFFFFF; /* White return wave */
+            animation: scan-up 1.5s ease-out forwards 1.5s; 
+        }
+        
+        @keyframes scan-down {
+            0% { transform: translateY(0); opacity: 0.5; }
+            100% { transform: translateY(4.5rem); opacity: 1; } 
+        }
+        @keyframes scan-up {
+            0% { transform: translateY(0); opacity: 0.5; }
+            100% { transform: translateY(-4.5rem); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="p-8">
+
+    <header class="text-center mb-6">
+        <h1 class="text-5xl tracking-widest header-title">
+            QUANTUM WAR ROOM
+        </h1>
+        <p class="text-xl header-subtitle">
+            Project Elitzur // Advanced Counting Protocol
+        </p>
+    </header>
+
+    <main class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        
+        <section class="panel md:col-span-2">
+            <h2 class="text-2xl text-white font-bold mb-4">SECTOR GRID (SINGLE PING)</h2>
+            <div id="game-grid" class="grid grid-cols-4 gap-4 h-96">
+                </div>
+        </section>
+
+        <section class="flex flex-col gap-6">
+            <div id="scanner-panel" class="panel">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl text-white font-bold">ADVANCED SCANNER</h2>
+                    <button id="show-explainer-btn" onclick="toggleModal(true)" 
+                            class="text-blue-400 font-bold w-8 h-8 rounded-full border border-blue-400 hover:bg-blue-400 hover:text-black transition-all">
+                        i
+                    </button>
+                </div>
+                <div id="scanner-grid" class="grid grid-cols-2 gap-4">
+                    </div>
+            </div>
+
+            <div id="command-log-panel" class="panel flex-1">
+                <h2 class="text-2xl text-white font-bold mb-4">COMMAND LOG</h2>
+                <div id="command-log">
+                    <p class="text-blue-400">Connecting to Quantum Engine...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <div id="explainer-modal" class="fixed inset-0 w-full h-full flex items-center justify-center z-50 hidden">
+        
+        <div class="absolute inset-0 w-full h-full bg-black opacity-60 backdrop-blur-sm" onclick="toggleModal(false)"></div>
+        
+        <div class="panel relative w-full max-w-2xl p-8">
+            <button onclick="toggleModal(false)" class="absolute top-4 right-6 text-3xl font-bold text-white opacity-70 hover:opacity-100">&times;</button>
+            
+            <h2 class="text-3xl font-black text-white mb-6">HOW THE ADVANCED SCANNER WORKS</h2>
+            
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+                
+                <div class="w-2/5">
+                    <div id="anim-container" class="relative">
+                        <div class="text-center mb-4">
+                            <div class="text-sm text-blue-400">3x Counting Qubits</div>
+                            <div id="anim-counters" class="flex justify-center gap-2 h-8">
+                                <div class="w-4 h-4 rounded-full anim-qubit"></div>
+                                <div class="w-4 h-4 rounded-full anim-qubit"></div>
+                                <div class="w-4 h-4 rounded-full anim-qubit"></div>
+                            </div>
+                        </div>
+                        
+                        <div id="anim-scan-wave" class="h-1 w-full rounded-full opacity-0"></div>
+                        <div class="text-center my-4 font-bold text-white">
+                            Quantum Phase Estimation
+                        </div>
+                        <div id="anim-return-wave" class="h-1 w-full rounded-full opacity-0"></div>
+
+                        <div class="text-center mt-4">
+                            <div class="text-sm text-blue-400">4x Target Qubits (The Row)</div>
+                            <div id="anim-targets" class="flex justify-center gap-4 h-8">
+                                <div class="w-8 h-8 rounded anim-target"></div>
+                                <div class="w-8 h-8 rounded anim-target ship"></div> <div class="w-8 h-8 rounded anim-target"></div>
+                                <div class="w-8 h-8 rounded anim-target ship"></div> </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="w-3/5 text-gray-300">
+                    <p class="mb-3">This is a true parallel quantum algorithm, not four separate checks.</p>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li>We take 3 "Counting Qubits" and 4 "Target Qubits" (the row you're scanning).</li>
+                        <li>We put all 7 qubits into a quantum circuit. A single "scan" operation (QPE) links all qubits at once.</li>
+                        <li>The "ship" targets (white) add "phase" to the counting qubits.</li>
+                        <li>The circuit "counts" the total phase and returns a single, final number.</li>
+                    </ol>
+                    <p class="mt-4 font-bold text-white text-lg">
+                        This allows us to find the <span class="text-blue-400">exact number</span> of ships in parallel.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIG ---
+        const API_URL = "http://127.0.0.1:5000";
+        const ROWS = ['A', 'B', 'C', 'D'];
+        const COLS = ['1', '2', '3', '4'];
+        
+        // --- SELECTORS ---
+        const gameGrid = document.getElementById('game-grid');
+        const scannerGrid = document.getElementById('scanner-grid');
+        const commandLog = document.getElementById('command-log');
+        let isPinging = false;
+        
+        // --- MODAL SCRIPT ---
+        const modal = document.getElementById('explainer-modal');
+        const body = document.body;
+
+        function toggleModal(show) {
+            if (show) {
+                modal.classList.remove('hidden');
+                body.classList.add('modal-open'); 
+            } else {
+                modal.classList.add('hidden');
+                body.classList.remove('modal-open');
+            }
+        }
+
+        // --- FUNCTIONS ---
+        function log(message, type = 'info') {
+            const p = document.createElement('p');
+            if (type === 'error') {
+                p.className = 'text-red-500';
+            } else if (type === 'success') {
+                p.className = 'text-yellow-400 font-bold';
+            } else {
+                p.className = 'text-blue-400';
+            }
+            p.textContent = `> ${message}`;
+            commandLog.appendChild(p);
+            commandLog.scrollTop = commandLog.scrollHeight;
+        }
+
+        async function handlePing(e) {
+            if (isPinging) return;
+            isPinging = true;
+            const button = e.target;
+            const buttonId = button.id;
+            button.disabled = true;
+            log(`Pinging sector ${buttonId}...`);
+
+            try {
+                const response = await fetch(`${API_URL}/ping`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: buttonId })
+                });
+                if (!response.ok) throw new Error(`Quantum Engine responded with ${response.status}`);
+                const data = await response.json();
+
+                if (data.result === 1) {
+                    log(`!! SHIP DETECTED AT ${buttonId} !!`, 'success');
+                    button.textContent = "!! SHIP !!";
+                    button.className = 'btn-base btn-ship'; 
+                } else {
+                    log(`Sector ${buttonId} is clear.`, 'info');
+                    button.textContent = "CLEAR";
+                    button.className = 'btn-base btn-clear';
+                }
+            } catch (error) {
+                log(`ERROR: ${error.message}`, 'error');
+                button.disabled = false;
+            }
+            isPinging = false;
+        }
+        
+        async function handleScan(e) {
+            if (isPinging) return;
+            isPinging = true;
+            const button = e.currentTarget; 
+            const scanId = button.id;
+            button.disabled = true;
+            log(`Engaging Advanced Scan on ${scanId}...`);
+
+            try {
+                const response = await fetch(`${API_URL}/scan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: scanId })
+                });
+                if (!response.ok) throw new Error(`Quantum Engine responded with ${response.status}`);
+                const data = await response.json();
+
+                button.className = 'btn-base btn-scan-used h-16 flex items-center justify-center';
+                
+                if (data.count > 0) {
+                    log(`** COUNT: ${data.count} SHIP(S) DETECTED **`, 'success');
+                    button.innerHTML = `<span class="scan-result-count">${data.count}</span>`;
+                } else {
+                    log(`Scan clear. No ships detected.`, 'info');
+                    button.innerHTML = `<span class="scan-result-clear">0</span>`;
+                }
+                
+            } catch (error) {
+                log(`ERROR: ${error.message}`, 'error');
+                button.disabled = false;
+            }
+            isPinging = false;
+        }
+
+        function initialize() {
+            log("Quantum Engine Linkup Confirmed. Awaiting Command.", "success");
+            
+            // 1. Create 4x4 grid
+            for (const r of ROWS) {
+                for (const c of COLS) {
+                    const id = `${r}${c}`;
+                    const button = document.createElement('button');
+                    button.id = id;
+                    button.textContent = id;
+                    button.className = 'btn-base h-20'; 
+                    button.onclick = handlePing;
+                    gameGrid.appendChild(button);
+                }
+            }
+            
+            // 2. Create Row Scanners
+            const rowHeader = document.createElement('h3');
+            rowHeader.textContent = "ROWS";
+            rowHeader.className = "text-white col-span-1 text-center font-bold";
+            scannerGrid.appendChild(rowHeader);
+            
+            const colHeader = document.createElement('h3');
+            colHeader.textContent = "COLS";
+            colHeader.className = "text-white col-span-1 text-center font-bold";
+            scannerGrid.appendChild(colHeader);
+            
+            // Add row buttons
+            const rowButtonContainer = document.createElement('div');
+            rowButtonContainer.className = "flex flex-col gap-2";
+            for (const r of ROWS) {
+                const id = `scan-row-${r}`;
+                const button = document.createElement('button');
+                button.id = id;
+                button.textContent = `ROW ${r}`;
+                button.className = 'btn-base h-16'; 
+                button.onclick = handleScan;
+                rowButtonContainer.appendChild(button);
+            }
+            scannerGrid.appendChild(rowButtonContainer);
+            
+            // Add col buttons
+            const colButtonContainer = document.createElement('div');
+            colButtonContainer.className = "flex flex-col gap-2";
+            for (const c of COLS) {
+                const id = `scan-col-${c}`;
+                const button = document.createElement('button');
+                button.id = id;
+                button.textContent = `COL ${c}`;
+                button.className = 'btn-base h-16';
+                button.onclick = handleScan;
+                colButtonContainer.appendChild(button);
+            }
+            scannerGrid.appendChild(colButtonContainer);
+        }
+
+        // --- START THE APP ---
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+</body>
+</html>
