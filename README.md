@@ -8,19 +8,21 @@ This project was built for the **Quantum Hackathon 2025**. It is a complete, dep
 
 ## 📸 Demo: The War Room Dashboard
 
-This is our "premium" glassmorphism UI, built as a full-stack Flask + JavaScript application. It's fully responsive, mobile-compatible, and runs our real quantum code on the backend.
+This is our glassmorphism UI, built as a full-stack Flask application. It's fully responsive, mobile-compatible, and runs our real quantum code on the backend.
 
 ****
 *<img width="1918" height="1081" alt="image" src="https://github.com/user-attachments/assets/e04fee41-ed8a-4815-9e7d-5db30b834e55" />
 *
 <img width="1918" height="1088" alt="image" src="https://github.com/user-attachments/assets/8d78f32b-b305-4604-afe2-4475228fa156" />
+<img width="1918" height="1088" alt="image" src="https://github.com/user-attachments/assets/0d520e30-0668-456f-93a1-179b493fb02b" />
+
 
 
 ---
 
 ## ✨ Core Features
 
-Our project is a game of two halves: a "Basic" mode that fulfills the prompt's requirements, and an "Advanced" mode that demonstrates our winning innovation.
+Our project is a game of two halves: a "Basic" mode that fulfills the requirements, and an "Advanced" mode that demonstrates our innovation.
 
 * ### 1. "Basic Ping" (Single-Target Scan)
     A 4x4 grid of sectors. The user can "ping" any single sector. Using a **2-qubit Elitzur-Vaidman** circuit, this ping detects a ship's presence *without* "hitting" it (i.e., without measuring the target qubit).
@@ -28,7 +30,7 @@ Our project is a game of two halves: a "Basic" mode that fulfills the prompt's r
 * ### 2. "Advanced Counter" (Multi-Target Scan)
     The user can scan an entire row or column *at once*. This runs a **7-qubit Quantum Phase Estimation (QPE)** circuit that returns the **exact number of ships** in that line (0, 1, 2, 3, or 4) in a single quantum operation.
 
-* ### 3. Premium "Legendary" UI
+* ### 3.  UI
     A full-stack Flask application serves a "glass panel" UI built with Tailwind CSS. It's designed to be clean, professional, and impressive.
 
 * ### 4. Animated "How-it-Works" Explainer
@@ -63,24 +65,24 @@ This project isn't just a UI wrapper; it's a deep dive into core quantum algorit
 We built a full-stack, three-tier application. The frontend is completely decoupled from the quantum engine, communicating via a standard JSON API.
 
 - Rudraksh Sharma
-- rudrax.github.io
+- [rudrax.github.io](URL)
 
 ```mermaid
 graph TD;
-    subgraph Browser
+    subgraph "Browser"
         Frontend[index.html: HTML/CSS/JS]
     end
 
-    subgraph Server (PythonAnywhere)
+    subgraph "Server (PythonAnywhere)"
         Backend[Flask API: app.py]
     end
 
-    subgraph Quantum Engine
+    subgraph "Quantum Engine"
         QEngine[Qiskit Aer Simulator]
     end
 
-    Frontend -- (HTTP Request) --> Backend;
-    Backend -- (Run Circuit) --> QEngine;
-    QEngine -- (Results) --> Backend;
-    Backend -- (JSON) --> Frontend;
+    Frontend -- "(HTTP Request)" --> Backend;
+    Backend -- "(Run Circuit)" --> QEngine;
+    QEngine -- "(Results)" --> Backend;
+    Backend -- "(JSON)" --> Frontend;
 
