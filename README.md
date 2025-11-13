@@ -65,7 +65,7 @@ This project isn't just a UI wrapper; it's a deep dive into core quantum algorit
 We built a full-stack, three-tier application. The frontend is completely decoupled from the quantum engine, communicating via a standard JSON API.
 
 - Rudraksh Sharma
-- [rudra1x.github.io](URL)
+- [[rudra1x.github.io](https://rudra1x.github.io/)](URL)
 war_room.py - Main file contains all quantum code.
 app.py - Flask app of main file
 index.html - Frontend of our implementation
